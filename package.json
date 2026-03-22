@@ -1,0 +1,11 @@
+{
+  "name": "shan-ye-xiang-huo-pu",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "build": "bash scripts/build-static.sh",
+    "check": "bash scripts/studio-check.sh",
+    "serve": "python3 -m http.server 4387"
+  }
+}

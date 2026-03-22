@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>山野香火铺</title>
+    <link rel="stylesheet" href="./src/gameplay/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="stage-shell">
+        <canvas
+          id="game-canvas"
+          width="1280"
+          height="720"
+          aria-label="山野香火铺游戏画面"
+        ></canvas>
+        <div class="overlay-ui">
+          <button id="start-btn" class="ui-btn">入市开张</button>
+          <button id="action-btn" class="ui-btn hidden">继续</button>
+          <button id="restart-btn" class="ui-btn hidden">重新开局</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./src/gameplay/main.js"></script>
+  </body>
+</html>

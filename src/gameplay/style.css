@@ -1,0 +1,118 @@
+:root {
+  --ink: #2d241d;
+  --paper: #efe1c3;
+  --paper-deep: #d7b985;
+  --vermillion: #b44531;
+  --ember: #dc8f44;
+  --jade: #496f54;
+  --shadow: rgba(26, 16, 10, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(240, 212, 151, 0.35), transparent 28%),
+    linear-gradient(180deg, #f5ecd8 0%, #d9c2a0 48%, #7f5d40 100%);
+  color: var(--ink);
+  font-family: "STKaiti", "KaiTi", "Songti SC", "Noto Serif SC", Georgia, serif;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+.app-shell {
+  width: min(100vw, 1500px);
+  padding: 24px;
+}
+
+.stage-shell {
+  position: relative;
+  width: min(100%, 1280px);
+  margin: 0 auto;
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 4px solid rgba(93, 55, 31, 0.7);
+  border-radius: 24px;
+  box-shadow:
+    0 24px 55px var(--shadow),
+    inset 0 0 0 1px rgba(255, 245, 220, 0.4);
+  background: #efe1c3;
+}
+
+.overlay-ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ui-btn {
+  position: absolute;
+  left: 50%;
+  min-width: 180px;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ca5e43, #973724);
+  color: #fff6e8;
+  font-size: 22px;
+  font-family: inherit;
+  letter-spacing: 0.08em;
+  transform: translateX(-50%);
+  box-shadow:
+    0 14px 24px rgba(95, 37, 25, 0.28),
+    inset 0 1px 0 rgba(255, 228, 200, 0.4);
+  pointer-events: auto;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    filter 140ms ease;
+}
+
+.ui-btn:hover {
+  filter: brightness(1.07);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.ui-btn:active {
+  transform: translateX(-50%) translateY(1px);
+}
+
+#start-btn {
+  bottom: 64px;
+}
+
+#action-btn {
+  bottom: 64px;
+}
+
+#restart-btn {
+  bottom: 64px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    padding: 10px;
+  }
+
+  .ui-btn {
+    min-width: 156px;
+    padding: 12px 18px;
+    font-size: 18px;
+  }
+}

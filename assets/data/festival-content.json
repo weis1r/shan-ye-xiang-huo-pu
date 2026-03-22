@@ -1,0 +1,486 @@
+{
+  "systems": {
+    "startingResources": {
+      "coins": 12,
+      "reputation": 0,
+      "harmony": 0
+    },
+    "startingBustle": 1,
+    "baseInventory": 4,
+    "spawnDelay": 0.75,
+    "patienceBase": 14,
+    "correctRewards": {
+      "reputation": 2,
+      "harmony": 1
+    },
+    "wrongSale": {
+      "minimumCoins": 1,
+      "reputation": -1,
+      "bustle": -1
+    },
+    "timeoutPenalty": {
+      "reputation": -2,
+      "bustle": -2
+    },
+    "bustle": {
+      "tierStep": 3,
+      "maxTier": 3,
+      "coinPerTier": 1,
+      "correctGain": 1
+    },
+    "summaryMoodThresholds": [
+      {
+        "min": 24,
+        "label": "灯火正旺"
+      },
+      {
+        "min": 14,
+        "label": "人气渐起"
+      },
+      {
+        "min": -999,
+        "label": "尚可一试"
+      }
+    ],
+    "endingThresholds": [
+      {
+        "min": 120,
+        "ending": "山门灯火",
+        "text": "三天灯会后，香客和街坊都把你的摊口当成了庙会里最暖的一盏灯。"
+      },
+      {
+        "min": 84,
+        "ending": "巷口新招牌",
+        "text": "这间香火铺已在古镇站稳脚跟，来年庙会一定还会有人专程来寻。"
+      },
+      {
+        "min": -999,
+        "ending": "初次开市",
+        "text": "虽然仍有生涩，但这间小铺已经有了故事，值得继续把灯火守下去。"
+      }
+    ]
+  },
+  "goods": [
+    {
+      "id": "incense",
+      "label": "清香",
+      "short": "香",
+      "color": "#cf9b4a",
+      "accent": "#f0d08d",
+      "price": 5,
+      "bonusText": "安神顺气"
+    },
+    {
+      "id": "fruit",
+      "label": "供果",
+      "short": "果",
+      "color": "#5d8f57",
+      "accent": "#99c377",
+      "price": 7,
+      "bonusText": "鲜甜讨喜"
+    },
+    {
+      "id": "talisman",
+      "label": "福牌",
+      "short": "福",
+      "color": "#b84738",
+      "accent": "#e68d68",
+      "price": 9,
+      "bonusText": "愿成心定"
+    }
+  ],
+  "focusOptions": [
+    {
+      "id": "incense",
+      "name": "山门清香",
+      "desc": "+2 清香库存，来客耐心更长，卖对清香额外 +1 口碑",
+      "aura": "#d2ad67",
+      "effects": {
+        "stock": {
+          "incense": 2
+        },
+        "patience": 2,
+        "goodCorrect": {
+          "incense": {
+            "reputation": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "fruit",
+      "name": "时鲜供果",
+      "desc": "+2 供果库存，卖对供果额外 +1 铜钱",
+      "aura": "#73a465",
+      "effects": {
+        "stock": {
+          "fruit": 2
+        },
+        "goodCorrect": {
+          "fruit": {
+            "coins": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "talisman",
+      "name": "福愿红绳",
+      "desc": "+2 福牌库存，卖对福牌额外 +1 缘分",
+      "aura": "#c25848",
+      "effects": {
+        "stock": {
+          "talisman": 2
+        },
+        "goodCorrect": {
+          "talisman": {
+            "harmony": 1
+          }
+        }
+      }
+    }
+  ],
+  "festivalDays": [
+    {
+      "id": 1,
+      "title": "初一开市",
+      "subtitle": "薄雾轻起，第一拨香客沿着石阶入镇。",
+      "nightTitle": "灯下添置",
+      "nightSubtitle": "收市以后，街坊们围到摊前，给你出起了第二天的主意。",
+      "palette": [
+        "#efd49a",
+        "#d98d4e",
+        "#6e8a65"
+      ],
+      "dayBlessing": {
+        "label": "香烟静气",
+        "desc": "今天卖对清香额外 +1 口碑。",
+        "effects": {
+          "goodCorrect": {
+            "incense": {
+              "reputation": 1
+            }
+          }
+        }
+      },
+      "guests": [
+        {
+          "name": "卖茶婆",
+          "desiredGood": "incense",
+          "wish": "想求一柱安稳香。",
+          "detail": "步子慢，笑眼弯弯。"
+        },
+        {
+          "name": "赶集少年",
+          "desiredGood": "fruit",
+          "wish": "娘让我带些像样的供果。",
+          "detail": "鞋上还沾着泥。"
+        },
+        {
+          "name": "庙祝学徒",
+          "desiredGood": "incense",
+          "wish": "师父让我来补一柱净手香。",
+          "detail": "怀里抱着香灰盘。",
+          "special": {
+            "badge": "稀客",
+            "ruleText": "耐心过半前卖对，额外 +2 铜钱；卖对后为明天添 1 份清香。",
+            "patienceScale": 0.9,
+            "onCorrect": {
+              "coins": 1,
+              "harmony": 1
+            },
+            "fastServe": {
+              "threshold": 0.5,
+              "coins": 2
+            },
+            "nextDay": {
+              "stock": {
+                "incense": 1
+              }
+            },
+            "nextDayBoonLabel": "庙祝学徒悄悄替你备下了一份清香"
+          }
+        },
+        {
+          "name": "写匾木匠",
+          "desiredGood": "talisman",
+          "wish": "给摊口挂个吉利福牌吧。",
+          "detail": "说话爽快。"
+        },
+        {
+          "name": "背篓樵夫",
+          "desiredGood": "incense",
+          "wish": "上山前得敬一敬。",
+          "detail": "肩上压着柴。"
+        },
+        {
+          "name": "河埠游客",
+          "desiredGood": "fruit",
+          "wish": "想带些顺眼的果子回去。",
+          "detail": "对山里东西都新鲜。"
+        },
+        {
+          "name": "说书人",
+          "desiredGood": "talisman",
+          "wish": "今晚开讲，求个开口彩。",
+          "detail": "袖里藏着折扇。"
+        }
+      ],
+      "nightEvents": [
+        {
+          "id": "lantern-path",
+          "title": "借灯铺路",
+          "desc": "请灯铺掌柜借来两盏引路灯，明日来客会更愿意在摊前多停一步。",
+          "costText": "-4 铜钱",
+          "boonLabel": "借来的灯火让摊前更留客",
+          "immediate": {
+            "coins": -4
+          },
+          "nextDay": {
+            "patience": 2,
+            "startBustle": 1
+          }
+        },
+        {
+          "id": "listen-elder",
+          "title": "听老人讲古",
+          "desc": "陪老香客坐一会儿，顺势学会更合礼的介绍话，明日更容易赢得信任。",
+          "costText": "+2 缘分",
+          "boonLabel": "街坊夜话让你的招呼更得体",
+          "immediate": {
+            "harmony": 2
+          },
+          "nextDay": {
+            "correct": {
+              "reputation": 1
+            },
+            "goodCorrect": {
+              "talisman": {
+                "coins": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "十五庙会",
+      "subtitle": "锣鼓和叫卖声交织，整条街都热起来了。",
+      "nightTitle": "收锣夜话",
+      "nightSubtitle": "戏台散场后，你还能再做一次布置，决定最后一日的气象。",
+      "palette": [
+        "#f5d390",
+        "#c85732",
+        "#4f7351"
+      ],
+      "dayBlessing": {
+        "label": "锣鼓催市",
+        "desc": "从第二次连单开始，每次卖对额外 +1 铜钱，且今日开场热闹 +1。",
+        "effects": {
+          "comboCoins": 1,
+          "startBustle": 1
+        }
+      },
+      "guests": [
+        {
+          "name": "还愿夫妻",
+          "desiredGood": "incense",
+          "wish": "想添一份香火，心里踏实。",
+          "detail": "并肩而来。"
+        },
+        {
+          "name": "戏班当家",
+          "desiredGood": "talisman",
+          "wish": "今晚压轴，要个最稳当的彩头。",
+          "detail": "衣袍上还沾着戏粉。",
+          "special": {
+            "badge": "戏台来客",
+            "ruleText": "卖对后额外 +1 口碑；耐心过半前卖对，再额外 +2 铜钱。",
+            "patienceScale": 0.85,
+            "onCorrect": {
+              "reputation": 1,
+              "bustle": 1
+            },
+            "fastServe": {
+              "threshold": 0.5,
+              "coins": 2
+            }
+          }
+        },
+        {
+          "name": "挑担果贩",
+          "desiredGood": "fruit",
+          "wish": "要一份最体面的果品。",
+          "detail": "急着赶下一场。"
+        },
+        {
+          "name": "远路行脚人",
+          "desiredGood": "incense",
+          "wish": "借点香气压压旅途疲惫。",
+          "detail": "鞋边沾着土。"
+        },
+        {
+          "name": "祈福孩童",
+          "desiredGood": "talisman",
+          "wish": "我想把好运带给阿娘。",
+          "detail": "眼睛亮亮的。"
+        },
+        {
+          "name": "小镇郎中",
+          "desiredGood": "fruit",
+          "wish": "清爽些的供果更讨喜。",
+          "detail": "说话细致。",
+          "special": {
+            "badge": "懂行客",
+            "ruleText": "卖对后额外 +1 缘分，并让明天卖对供果额外 +1 缘分。",
+            "onCorrect": {
+              "harmony": 1
+            },
+            "nextDay": {
+              "goodCorrect": {
+                "fruit": {
+                  "harmony": 1
+                }
+              }
+            },
+            "nextDayBoonLabel": "郎中提醒你：明天的供果要更清爽讨喜"
+          }
+        },
+        {
+          "name": "戏台鼓手",
+          "desiredGood": "talisman",
+          "wish": "上台前讨个彩头。",
+          "detail": "手指敲着鼓点。"
+        },
+        {
+          "name": "绣坊姑娘",
+          "desiredGood": "talisman",
+          "wish": "想求个手艺顺意。",
+          "detail": "腰间别着线轴。"
+        }
+      ],
+      "nightEvents": [
+        {
+          "id": "hire-troupe",
+          "title": "请戏班暖场",
+          "desc": "花钱请戏班在摊前走一段热场，最后一日一开市就更热闹。",
+          "costText": "-6 铜钱",
+          "boonLabel": "戏班余热会把明日的人潮先带过来",
+          "immediate": {
+            "coins": -6
+          },
+          "nextDay": {
+            "startBustle": 2,
+            "correct": {
+              "coins": 1
+            }
+          }
+        },
+        {
+          "id": "prepare-night-fruit",
+          "title": "赶做夜果",
+          "desc": "趁夜里把明天的供果先备出来，顺手在篮边系上红绳。",
+          "costText": "-2 铜钱，+1 缘分",
+          "boonLabel": "夜里备好的供果更显体面",
+          "immediate": {
+            "coins": -2,
+            "harmony": 1
+          },
+          "nextDay": {
+            "stock": {
+              "fruit": 2
+            },
+            "goodCorrect": {
+              "fruit": {
+                "harmony": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "月下收尾",
+      "subtitle": "夜灯点起，山风和人潮都带着一点留恋。",
+      "palette": [
+        "#f2c884",
+        "#b2412c",
+        "#52755f"
+      ],
+      "dayBlessing": {
+        "label": "灯影映愿",
+        "desc": "今天每次卖对额外 +1 缘分，特殊来客再额外 +1 热闹。",
+        "effects": {
+          "correct": {
+            "harmony": 1
+          }
+        }
+      },
+      "guests": [
+        {
+          "name": "山路香客",
+          "desiredGood": "incense",
+          "wish": "天暗了，想求一路平安。",
+          "detail": "衣角带着夜露。"
+        },
+        {
+          "name": "灯铺掌柜",
+          "desiredGood": "fruit",
+          "wish": "得摆一盘漂亮供果镇场。",
+          "detail": "说话带着笑意。"
+        },
+        {
+          "name": "借宿书生",
+          "desiredGood": "talisman",
+          "wish": "求个心定神清的福牌。",
+          "detail": "袖中塞着试帖。"
+        },
+        {
+          "name": "夜巡更夫",
+          "desiredGood": "incense",
+          "wish": "今夜巡路长，先敬一柱香。",
+          "detail": "铜锣挂在腰边。"
+        },
+        {
+          "name": "茶棚老板娘",
+          "desiredGood": "fruit",
+          "wish": "给隔壁戏班捎一份果子。",
+          "detail": "身上带茶香。"
+        },
+        {
+          "name": "山野异客",
+          "desiredGood": "talisman",
+          "wish": "你这里的福意，比别处更真。",
+          "detail": "说不清来历。",
+          "special": {
+            "badge": "传说来客",
+            "ruleText": "卖对后额外 +2 缘分、+1 热闹；耐心过半前卖对，再额外 +2 铜钱。",
+            "patienceScale": 0.8,
+            "onCorrect": {
+              "harmony": 2,
+              "bustle": 1
+            },
+            "fastServe": {
+              "threshold": 0.5,
+              "coins": 2
+            }
+          }
+        },
+        {
+          "name": "归乡商队长",
+          "desiredGood": "incense",
+          "wish": "回乡前，想添点安心气。",
+          "detail": "风尘仆仆。"
+        },
+        {
+          "name": "庙祝助手",
+          "desiredGood": "fruit",
+          "wish": "收尾要端正些。",
+          "detail": "说话规矩。"
+        }
+      ]
+    }
+  ]
+}
