@@ -11,9 +11,11 @@ Original prompt: 可以把这些想法,做成一个游戏吧,我不想被打扰,
 - Migrated goods, focus options, festival days, special guests, and night events into `assets/data/festival-content.json`.
 - Added bustle, streak rewards, special guest boons, and night-planning decisions to deepen the loop from simple matching into continuous festival management.
 - Added a clean static build flow that outputs deployable files into `dist/`.
+- Initialized Git, pushed `main` to `https://github.com/weis1r/shan-ye-xiang-huo-pu`, and published the static bundle to CloudBase Hosting.
+- Verified the live site on `https://zty-game-5g8dxrld0e320cd1-1409311050.tcloudbaseapp.com`, including the start screen, prep screen, script/data loading, and the CloudBase test-domain access prompt.
 
 ## TODO
 
-- Push the new repository and deploy the `dist/` bundle to CloudBase Hosting.
 - Add more day-specific art variation and audio.
 - Introduce progression between festivals, not just within a single 3-day run.
+- Consider a custom domain or production domain so players do not see the CloudBase test-domain prompt on first visit.

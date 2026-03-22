@@ -133,3 +133,10 @@ npm run build
 ```
 
 打包结果会输出到 `dist/`，适合直接部署到 CloudBase Hosting。
+
+### 仓库与线上地址
+
+- GitHub：`https://github.com/weis1r/shan-ye-xiang-huo-pu`
+- CloudBase：`https://zty-game-5g8dxrld0e320cd1-1409311050.tcloudbaseapp.com`
+
+CloudBase 当前使用的是测试域名。首次在浏览器打开时会先看到一层“页面访问提示”，点击“确定访问”后即可进入《山野香火铺》。
