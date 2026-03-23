@@ -76,6 +76,106 @@ body {
   line-height: 1.6;
 }
 
+.touch-controls {
+  display: none;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 16px;
+  border: 1px solid rgba(112, 74, 46, 0.18);
+  border-radius: 22px;
+  background: rgba(251, 244, 228, 0.92);
+  box-shadow: 0 18px 34px rgba(60, 35, 21, 0.08);
+  gap: 12px;
+}
+
+.touch-controls__hint {
+  margin: 0;
+  color: rgba(79, 51, 35, 0.82);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.touch-controls__choices {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+}
+
+.touch-controls__choice,
+.touch-controls__primary {
+  min-height: 54px;
+  border: 0;
+  border-radius: 18px;
+  padding: 12px 14px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.touch-controls__choice {
+  border: 1px solid rgba(112, 74, 46, 0.14);
+  background: rgba(255, 249, 236, 0.94);
+  box-shadow: 0 10px 18px rgba(80, 50, 32, 0.06);
+}
+
+.touch-controls__choice[data-tone="incense"] {
+  border-color: rgba(207, 155, 74, 0.42);
+}
+
+.touch-controls__choice[data-tone="fruit"] {
+  border-color: rgba(93, 143, 87, 0.42);
+}
+
+.touch-controls__choice[data-tone="talisman"] {
+  border-color: rgba(184, 71, 56, 0.38);
+}
+
+.touch-controls__choice[data-tone="night"] {
+  border-color: rgba(180, 75, 53, 0.32);
+}
+
+.touch-controls__choice.is-selected {
+  border-color: rgba(180, 75, 53, 0.5);
+  background: rgba(245, 224, 187, 0.94);
+}
+
+.touch-controls__choice:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.touch-controls__choice-title {
+  display: block;
+  color: #4d3022;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.touch-controls__choice-meta {
+  display: block;
+  margin-top: 6px;
+  color: rgba(79, 51, 35, 0.72);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.touch-controls__primary {
+  display: block;
+  width: 100%;
+  background: linear-gradient(180deg, #ca5e43, #973724);
+  color: #fff6e8;
+  text-align: center;
+  box-shadow:
+    0 14px 24px rgba(95, 37, 25, 0.18),
+    inset 0 1px 0 rgba(255, 228, 200, 0.4);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+}
+
+.touch-controls:not(.hidden) {
+  display: grid;
+}
+
 #game-canvas {
   display: block;
   width: 100%;
@@ -239,6 +339,10 @@ body {
     display: block;
   }
 
+  .touch-controls:not(.hidden) {
+    display: grid;
+  }
+
   .app-shell {
     padding-top: max(12px, env(safe-area-inset-top));
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
@@ -254,6 +358,23 @@ body {
 
   .mobile-guidance__copy {
     font-size: 15px;
+  }
+
+  .touch-controls {
+    padding: 14px;
+  }
+
+  .touch-controls__hint {
+    font-size: 14px;
+  }
+
+  .touch-controls__choice-title {
+    font-size: 18px;
+  }
+
+  .touch-controls__primary {
+    min-height: 56px;
+    font-size: 20px;
   }
 
   #start-btn,

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>山野香火铺</title>
-    <link rel="stylesheet" href="./src/gameplay/style.css?v=20260323-mobile2" />
+    <link rel="stylesheet" href="./src/gameplay/style.css?v=20260323-mobile3" />
   </head>
   <body>
     <main class="app-shell">
@@ -28,7 +28,12 @@
           <button id="restart-btn" class="ui-btn ui-btn--ghost hidden">重新开局</button>
         </div>
       </section>
+      <section id="touch-controls" class="touch-controls hidden" aria-live="polite">
+        <p id="touch-controls-hint" class="touch-controls__hint"></p>
+        <div id="touch-controls-choices" class="touch-controls__choices"></div>
+        <button id="touch-controls-primary" class="touch-controls__primary hidden"></button>
+      </section>
     </main>
-    <script type="module" src="./src/gameplay/main.js?v=20260323-mobile2"></script>
+    <script type="module" src="./src/gameplay/main.js?v=20260323-mobile3"></script>
   </body>
 </html>

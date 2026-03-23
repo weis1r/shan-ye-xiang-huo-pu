@@ -6,6 +6,10 @@ const actionBtn = document.getElementById("action-btn");
 const restartBtn = document.getElementById("restart-btn");
 const mobileGuidance = document.getElementById("mobile-guidance");
 const mobileGuidanceCopy = document.getElementById("mobile-guidance-copy");
+const touchControls = document.getElementById("touch-controls");
+const touchControlsHint = document.getElementById("touch-controls-hint");
+const touchControlsChoices = document.getElementById("touch-controls-choices");
+const touchControlsPrimary = document.getElementById("touch-controls-primary");
 
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
@@ -17,6 +21,7 @@ let content = null;
 let animationFrame = 0;
 let previousTs = 0;
 let inputCooldown = 0;
+let lastTouchControlsSignature = "";
 
 const state = {
   mode: "loading",
@@ -73,6 +78,10 @@ function shouldShowMobileGuidance() {
   return isTouchLayout() && isPortraitLayout();
 }
 
+function shouldShowTouchControls() {
+  return isTouchLayout() && isPortraitLayout();
+}
+
 function updateResponsiveUI() {
   const showGuidance = shouldShowMobileGuidance();
   mobileGuidance?.classList.toggle("hidden", !showGuidance);
@@ -115,6 +124,197 @@ function getRestartHintText() {
     return "右上角可随时重开这天";
   }
   return "按 R 重开本轮";
+}
+
+function setFocusSelection(index) {
+  if (!getFocusOptions()[index]) {
+    return;
+  }
+  state.selectedFocus = index;
+  state.inventory = buildInventory(getCurrentFocus().effects);
+  setMessage(`已选 ${getCurrentFocus().name}。`, 2);
+}
+
+function setNightSelection(index) {
+  if (!getCurrentNightOptions()[index]) {
+    return;
+  }
+  state.selectedNightOption = index;
+  setMessage(getCurrentNightOptions()[index].desc, 2.8);
+}
+
+function serveGoodByIndex(index) {
+  if (!getGoods()[index]) {
+    return;
+  }
+  state.selectedGood = index;
+  serveSelectedGood();
+}
+
+function buildTouchControlsDescriptor() {
+  if (state.mode === "menu") {
+    return {
+      hint: "轻触下方按钮开张，进入今天的第一轮备货。",
+      choices: [],
+      primaryLabel: "入市开张",
+    };
+  }
+
+  if (state.mode === "prep") {
+    return {
+      hint: "先定今天的幡头，再敲锣开市。幡头会影响库存和额外收益。",
+      choices: getFocusOptions().map((option, index) => ({
+        action: "focus",
+        index,
+        tone: option.id,
+        title: option.name,
+        meta: option.desc,
+        selected: state.selectedFocus === index,
+      })),
+      primaryLabel: "敲锣开市",
+    };
+  }
+
+  if (state.mode === "market") {
+    const desired = state.currentGuest ? getGoodById(state.currentGuest.desiredGood) : null;
+    return {
+      hint: desired
+        ? `${state.currentGuest.name} 想要 ${desired.label}。轻触货品就会立刻出手。`
+        : "下一位来客快到了，先把手头货品备好。",
+      choices: getGoods().map((good, index) => ({
+        action: "good",
+        index,
+        tone: good.id,
+        title: `${good.label} · 库存 ${state.inventory[good.id] ?? 0}`,
+        meta: (state.inventory[good.id] ?? 0) > 0 ? good.bonusText : "这件已经卖空了",
+        selected: state.selectedGood === index,
+        disabled: (state.inventory[good.id] ?? 0) <= 0,
+      })),
+      primaryLabel: "",
+    };
+  }
+
+  if (state.mode === "summary") {
+    return {
+      hint:
+        state.dayIndex >= getDays().length - 1
+          ? "三天小节庆已经收灯，轻触按钮看看这轮香火铺的结局。"
+          : "白天收市了，接下来还能做一次夜里布置。",
+      choices: [],
+      primaryLabel: state.dayIndex >= getDays().length - 1 ? "收灯看结局" : "入夜布置",
+    };
+  }
+
+  if (state.mode === "night") {
+    return {
+      hint: "先挑今晚的安排，再轻触按钮把决定定下来，明天会吃到对应加成。",
+      choices: getCurrentNightOptions().map((option, index) => ({
+        action: "night",
+        index,
+        tone: "night",
+        title: option.title,
+        meta: `${option.costText} / ${option.boonLabel}`,
+        selected: state.selectedNightOption === index,
+        disabled: !canAffordEffect(option.immediate),
+      })),
+      primaryLabel: "收灯布置",
+    };
+  }
+
+  if (state.mode === "ending") {
+    return {
+      hint: "这一轮的灯火已经落定，还想继续经营就再开一局。",
+      choices: [],
+      primaryLabel: "再开一局",
+    };
+  }
+
+  return {
+    hint: "",
+    choices: [],
+    primaryLabel: "",
+  };
+}
+
+function createTouchChoiceButton(choice) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = `touch-controls__choice${choice.selected ? " is-selected" : ""}`;
+  button.dataset.action = choice.action;
+  button.dataset.index = String(choice.index);
+  button.dataset.tone = choice.tone;
+  button.disabled = Boolean(choice.disabled);
+
+  const title = document.createElement("span");
+  title.className = "touch-controls__choice-title";
+  title.textContent = choice.title;
+
+  const meta = document.createElement("span");
+  meta.className = "touch-controls__choice-meta";
+  meta.textContent = choice.meta;
+
+  button.append(title, meta);
+  return button;
+}
+
+function syncTouchControls() {
+  if (!touchControls || !touchControlsHint || !touchControlsChoices || !touchControlsPrimary) {
+    return;
+  }
+
+  const shouldShow =
+    shouldShowTouchControls() && !["loading", "error"].includes(state.mode);
+  touchControls.classList.toggle("hidden", !shouldShow);
+
+  if (!shouldShow) {
+    lastTouchControlsSignature = "";
+    touchControlsHint.textContent = "";
+    touchControlsChoices.replaceChildren();
+    touchControlsPrimary.classList.add("hidden");
+    touchControlsPrimary.textContent = "";
+    return;
+  }
+
+  const descriptor = buildTouchControlsDescriptor();
+  const signature = JSON.stringify(descriptor);
+  if (signature === lastTouchControlsSignature) {
+    return;
+  }
+  lastTouchControlsSignature = signature;
+
+  touchControlsHint.textContent = descriptor.hint;
+  touchControlsChoices.replaceChildren(
+    ...descriptor.choices.map((choice) => createTouchChoiceButton(choice)),
+  );
+
+  if (descriptor.primaryLabel) {
+    touchControlsPrimary.textContent = descriptor.primaryLabel;
+    touchControlsPrimary.classList.remove("hidden");
+  } else {
+    touchControlsPrimary.textContent = "";
+    touchControlsPrimary.classList.add("hidden");
+  }
+}
+
+function handleTouchChoiceClick(event) {
+  const button = event.target.closest(".touch-controls__choice");
+  if (!button) {
+    return;
+  }
+
+  const index = Number(button.dataset.index);
+  const action = button.dataset.action;
+  if (action === "focus") {
+    setFocusSelection(index);
+    return;
+  }
+  if (action === "good") {
+    serveGoodByIndex(index);
+    return;
+  }
+  if (action === "night") {
+    setNightSelection(index);
+  }
 }
 
 function emptyModifier() {
@@ -749,9 +949,9 @@ function cycleFocus(direction) {
     return;
   }
   inputCooldown = 0.16;
-  state.selectedFocus =
+  const nextIndex =
     (state.selectedFocus + direction + getFocusOptions().length) % getFocusOptions().length;
-  state.inventory = buildInventory(getCurrentFocus().effects);
+  setFocusSelection(nextIndex);
 }
 
 function cycleNightOption(direction) {
@@ -763,9 +963,9 @@ function cycleNightOption(direction) {
     return;
   }
   inputCooldown = 0.16;
-  state.selectedNightOption =
+  const nextIndex =
     (state.selectedNightOption + direction + options.length) % options.length;
-  setMessage(options[state.selectedNightOption].desc, 2.8);
+  setNightSelection(nextIndex);
 }
 
 function triggerPrimaryAction() {
@@ -850,6 +1050,7 @@ function draw() {
   if (state.paused) {
     drawPauseOverlay();
   }
+  syncTouchControls();
 }
 
 function getActivePalette() {
@@ -1439,19 +1640,15 @@ function handleCanvasClick(event) {
   }
 
   if (hit.type === "focus" && state.mode === "prep") {
-    state.selectedFocus = hit.index;
-    state.inventory = buildInventory(getCurrentFocus().effects);
-    setMessage(`已选 ${getCurrentFocus().name}。`, 2);
+    setFocusSelection(hit.index);
   }
 
   if (hit.type === "good" && state.mode === "market") {
-    state.selectedGood = hit.index;
-    serveSelectedGood();
+    serveGoodByIndex(hit.index);
   }
 
   if (hit.type === "night" && state.mode === "night") {
-    state.selectedNightOption = hit.index;
-    setMessage(getCurrentNightOptions()[hit.index].desc, 2.8);
+    setNightSelection(hit.index);
   }
 
   if (hit.type === "primary") {
@@ -1469,6 +1666,12 @@ function buildTextState() {
       touch: isTouchLayout(),
       portrait: isPortraitLayout(),
       guidance_visible: !mobileGuidance.classList.contains("hidden"),
+    },
+    touch_controls: {
+      visible: !touchControls.classList.contains("hidden"),
+      hint: touchControlsHint?.textContent || "",
+      choice_count: touchControlsChoices?.childElementCount || 0,
+      primary_visible: !touchControlsPrimary.classList.contains("hidden"),
     },
     mode: state.mode,
     day: getCurrentDay()?.id ?? null,
@@ -1565,6 +1768,8 @@ startBtn.addEventListener("click", resetGame);
 actionBtn.addEventListener("click", triggerPrimaryAction);
 restartBtn.addEventListener("click", resetGame);
 canvas.addEventListener("click", handleCanvasClick);
+touchControlsChoices.addEventListener("click", handleTouchChoiceClick);
+touchControlsPrimary.addEventListener("click", triggerPrimaryAction);
 window.addEventListener("resize", updateResponsiveUI);
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);

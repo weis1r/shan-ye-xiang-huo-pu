@@ -17,6 +17,8 @@ Original prompt: 可以把这些想法,做成一个游戏吧,我不想被打扰,
 - Added mobile portrait guidance, touch-first helper copy, and a clearer in-game restart affordance for phone layouts.
 - Added cache-busting query strings to `index.html` so CloudBase no longer serves stale JS/CSS after deployment.
 - Re-deployed the updated mobile-friendly build to CloudBase and verified the live phone flow after the test-domain prompt.
+- Added a portrait-only touch control tray so phone players can pick幡头、直接卖货、处理夜市决定 without relying on tiny in-canvas cards.
+- Verified the new touch tray through Playwright runs covering prep selection, market selling, full first-day completion, night decision flow, and arrival at day-two prep.
 
 ## TODO
 
