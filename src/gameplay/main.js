@@ -4,6 +4,8 @@ const ctx = canvas.getContext("2d");
 const startBtn = document.getElementById("start-btn");
 const actionBtn = document.getElementById("action-btn");
 const restartBtn = document.getElementById("restart-btn");
+const mobileGuidance = document.getElementById("mobile-guidance");
+const mobileGuidanceCopy = document.getElementById("mobile-guidance-copy");
 
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
@@ -54,6 +56,66 @@ const state = {
 };
 
 const keys = new Set();
+
+function isTouchLayout() {
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(hover: none)").matches ||
+    window.innerWidth <= 900
+  );
+}
+
+function isPortraitLayout() {
+  return window.innerHeight > window.innerWidth;
+}
+
+function shouldShowMobileGuidance() {
+  return isTouchLayout() && isPortraitLayout();
+}
+
+function updateResponsiveUI() {
+  const showGuidance = shouldShowMobileGuidance();
+  mobileGuidance?.classList.toggle("hidden", !showGuidance);
+
+  if (mobileGuidanceCopy) {
+    mobileGuidanceCopy.textContent = showGuidance
+      ? "竖屏也能继续试玩，但横过来能更清楚地看见来客、货品和夜里布置。"
+      : "轻触卡片和红色按钮就能继续经营，横屏时能一眼看清整张案台。";
+  }
+
+  draw();
+}
+
+function getMenuHintText() {
+  if (!isTouchLayout()) {
+    return "按 F 全屏，Esc 退出全屏，R 可随时重开。";
+  }
+  if (isPortraitLayout()) {
+    return "轻触红色按钮开张；竖屏也能玩，但横过来会更舒服。";
+  }
+  return "轻触红色按钮和卡片即可经营，横屏时来客与货品会更清楚。";
+}
+
+function getPrepHintText() {
+  if (isTouchLayout()) {
+    return "轻触幡头切换今日摊口，再点红色按钮开市。";
+  }
+  return "左右键换幡头，空格或按钮开市。也可直接点击卡片。";
+}
+
+function getNightHintText() {
+  if (isTouchLayout()) {
+    return "轻触夜里安排切换方案，再点红色按钮定下明日布置。";
+  }
+  return "左右键切换夜里安排，空格确认。点击卡片可选择。";
+}
+
+function getRestartHintText() {
+  if (isTouchLayout()) {
+    return "右上角可随时重开这天";
+  }
+  return "按 R 重开本轮";
+}
 
 function emptyModifier() {
   return {
@@ -741,7 +803,7 @@ function triggerPrimaryAction() {
 function syncButtons() {
   startBtn.classList.toggle("hidden", state.mode !== "menu");
   actionBtn.classList.toggle("hidden", !["prep", "summary", "night"].includes(state.mode));
-  restartBtn.classList.toggle("hidden", !["ending", "market", "night"].includes(state.mode));
+  restartBtn.classList.toggle("hidden", !["market", "night"].includes(state.mode));
 
   if (state.mode === "prep") {
     actionBtn.textContent = "敲锣开市";
@@ -752,6 +814,12 @@ function syncButtons() {
   }
   if (state.mode === "night") {
     actionBtn.textContent = "收灯布置";
+  }
+
+  if (state.mode === "market") {
+    restartBtn.textContent = "重开这天";
+  } else if (state.mode === "night") {
+    restartBtn.textContent = "重排夜市";
   }
 }
 
@@ -940,7 +1008,7 @@ function drawMenu() {
 
   ctx.font = '20px "Songti SC", Georgia, serif';
   ctx.fillStyle = "rgba(79, 51, 35, 0.7)";
-  ctx.fillText("按 F 全屏，Esc 退出全屏，R 可随时重开。", 92, 622);
+  wrapText(getMenuHintText(), 92, 622, 1040, 26);
   drawPrimaryCanvasButton("入市开张");
 }
 
@@ -997,7 +1065,7 @@ function drawPrepScreen() {
 
   ctx.font = '20px "Songti SC", Georgia, serif';
   ctx.fillStyle = "rgba(79, 51, 35, 0.75)";
-  ctx.fillText("左右键换幡头，空格或按钮开市。也可直接点击卡片。", 118, 530);
+  wrapText(getPrepHintText(), 118, 530, 960, 28);
   drawPrimaryCanvasButton("敲锣开市");
 }
 
@@ -1083,11 +1151,7 @@ function drawMarketScreen() {
   if (state.activeBoonLabels.length > 0) {
     wrapText(`今日加成：${state.activeBoonLabels.join("、")}`, 562, 566, 360, 24);
   }
-  drawSecondaryCanvasBadge("按 R 重开本轮", 968, 548, 196, 42);
-
-  if (!restartBtn.classList.contains("hidden")) {
-    restartBtn.textContent = "重开这一轮";
-  }
+  drawSecondaryCanvasBadge(getRestartHintText(), 948, 548, 216, 42);
 }
 
 function drawSummaryScreen() {
@@ -1179,7 +1243,7 @@ function drawNightScreen() {
 
   ctx.font = '18px "Songti SC", Georgia, serif';
   ctx.fillStyle = "rgba(79, 51, 35, 0.76)";
-  ctx.fillText("左右键切换夜里安排，空格确认。点击卡片可选择。", 126, 534);
+  wrapText(getNightHintText(), 126, 534, 920, 26);
   drawPrimaryCanvasButton("收灯布置");
 }
 
@@ -1399,6 +1463,13 @@ function buildTextState() {
   const isNight = state.mode === "night";
   return JSON.stringify({
     coordinate_system: "origin at top-left, x grows right, y grows down",
+    viewport: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      touch: isTouchLayout(),
+      portrait: isPortraitLayout(),
+      guidance_visible: !mobileGuidance.classList.contains("hidden"),
+    },
     mode: state.mode,
     day: getCurrentDay()?.id ?? null,
     day_title: getCurrentDay()?.title ?? null,
@@ -1466,6 +1537,7 @@ function advanceTime(ms) {
 
 async function boot() {
   initializeDecor();
+  updateResponsiveUI();
   syncButtons();
   draw();
 
@@ -1493,6 +1565,7 @@ startBtn.addEventListener("click", resetGame);
 actionBtn.addEventListener("click", triggerPrimaryAction);
 restartBtn.addEventListener("click", resetGame);
 canvas.addEventListener("click", handleCanvasClick);
+window.addEventListener("resize", updateResponsiveUI);
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 window.addEventListener("blur", () => {

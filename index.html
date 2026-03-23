@@ -4,10 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>山野香火铺</title>
-    <link rel="stylesheet" href="./src/gameplay/style.css" />
+    <link rel="stylesheet" href="./src/gameplay/style.css?v=20260323-mobile2" />
   </head>
   <body>
     <main class="app-shell">
+      <section id="mobile-guidance" class="mobile-guidance hidden" aria-live="polite">
+        <p class="mobile-guidance__eyebrow">手机试玩提示</p>
+        <h1 class="mobile-guidance__title">横屏开张，会更像真正摆摊。</h1>
+        <p id="mobile-guidance-copy" class="mobile-guidance__copy">
+          竖屏也能继续试玩，但横过来能更清楚地看见来客、货品和夜里布置。
+        </p>
+      </section>
       <section class="stage-shell">
         <canvas
           id="game-canvas"
@@ -16,12 +23,12 @@
           aria-label="山野香火铺游戏画面"
         ></canvas>
         <div class="overlay-ui">
-          <button id="start-btn" class="ui-btn">入市开张</button>
-          <button id="action-btn" class="ui-btn hidden">继续</button>
-          <button id="restart-btn" class="ui-btn hidden">重新开局</button>
+          <button id="start-btn" class="ui-btn ui-btn--hitbox">入市开张</button>
+          <button id="action-btn" class="ui-btn ui-btn--hitbox hidden">继续</button>
+          <button id="restart-btn" class="ui-btn ui-btn--ghost hidden">重新开局</button>
         </div>
       </section>
     </main>
-    <script type="module" src="./src/gameplay/main.js"></script>
+    <script type="module" src="./src/gameplay/main.js?v=20260323-mobile2"></script>
   </body>
 </html>
